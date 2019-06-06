@@ -11,7 +11,7 @@
         <h1>MediaCapture, MediaRecorder and Streams API</h1>
     </header>
     <main>
-        <button id="switchCam">
+        <button onclick="switch();">Switch camera</button>
         <video></video>
     </main>    
     <script>
@@ -27,9 +27,8 @@
         // facingMode: {exact: "user"}
         // facingMode: "environment" or "user"
         
-        var switch = document.querySelector('button');
         var environment = false
-        switch.addEventListener('click', (ev)=>{
+        function switch();
             if (environment) {
                 environment = false
                 var constraintObj = {
@@ -52,7 +51,7 @@
                 };
             }
             updateVideo();
-        })
+        }
         
         function updateVideo() {
             //handle older browsers that might implement getUserMedia in some way
