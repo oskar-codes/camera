@@ -15,63 +15,92 @@
         <video></video>
     </main>    
     <script>
-        var switch = document.querySelector('button');
-        
-        var constraintObj = { 
-            audio: false, 
-            video: { 
-                facingMode: "environment", 
+        var constraintObj = {
+            audio: false,
+            video: {
+                facingMode: "user",
                 width: { min: 640, ideal: 1280, max: 1920 },
-                height: { min: 480, ideal: 720, max: 1080 } 
-            } 
-        }; 
+                height: { min: 480, ideal: 720, max: 1080 }
+            }
+        };
         // width: 1280, height: 720  -- preference only
         // facingMode: {exact: "user"}
         // facingMode: "environment" or "user"
         
-        //handle older browsers that might implement getUserMedia in some way
-        if (navigator.mediaDevices === undefined) {
-            navigator.mediaDevices = {};
-            navigator.mediaDevices.getUserMedia = function(constraintObj) {
-                let getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-                if (!getUserMedia) {
-                    return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
-                }
-                return new Promise(function(resolve, reject) {
-                    getUserMedia.call(navigator, constraintObj, resolve, reject);
-                });
-            }
-        }else{
-            navigator.mediaDevices.enumerateDevices()
-            .then(devices => {
-                devices.forEach(device=>{
-                    console.log(device.kind.toUpperCase(), device.label);
-                    //, device.deviceId
-                })
-            })
-            .catch(err=>{
-                console.log(err.name, err.message);
-            })
-        }
-        navigator.mediaDevices.getUserMedia(constraintObj)
-        .then(function(mediaStreamObj) {
-            //connect the media stream to the first video element
-            let video = document.querySelector('video');
-            if ("srcObject" in video) {
-                video.srcObject = mediaStreamObj;
+        var switch = document.querySelector('button');
+        var environment = false
+        switch.addEventListener('click', (ev)=>{
+            if (environment) {
+                environment = false
+                var constraintObj = {
+                    audio: false,
+                    video: {
+                        facingMode: "user",
+                        width: { min: 640, ideal: 1280, max: 1920 },
+                        height: { min: 480, ideal: 720, max: 1080 }
+                    }
+                };
             } else {
-                //old version
-                video.src = window.URL.createObjectURL(mediaStreamObj);
+                environment = true
+                var constraintObj = {
+                    audio: false,
+                    video: {
+                        facingMode: "environment",
+                        width: { min: 640, ideal: 1280, max: 1920 },
+                        height: { min: 480, ideal: 720, max: 1080 }
+                    }
+                };
             }
-            
-            video.onloadedmetadata = function(ev) {
-                //show in the video element what is being captured by the webcam
-                video.play();
-            };
+            updateVideo();
         })
-        .catch(function(err) { 
-            console.log(err.name, err.message); 
-        });
+        
+        function updateVideo() {
+            //handle older browsers that might implement getUserMedia in some way
+            if (navigator.mediaDevices === undefined) {
+                navigator.mediaDevices = {};
+                navigator.mediaDevices.getUserMedia = function(constraintObj) {
+                    let getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                    if (!getUserMedia) {
+                        return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+                    }
+                    return new Promise(function(resolve, reject) {
+                        getUserMedia.call(navigator, constraintObj, resolve, reject);
+                    });
+                }
+            }else{
+                navigator.mediaDevices.enumerateDevices()
+                .then(devices => {
+                    devices.forEach(device=>{
+                        console.log(device.kind.toUpperCase(), device.label);
+                        //, device.deviceId
+                    })
+                })
+                .catch(err=>{
+                    console.log(err.name, err.message);
+                })
+            }
+            navigator.mediaDevices.getUserMedia(constraintObj)
+            .then(function(mediaStreamObj) {
+                //connect the media stream to the first video element
+                let video = document.querySelector('video');
+                if ("srcObject" in video) {
+                    video.srcObject = mediaStreamObj;
+                } else {
+                    //old version
+                    video.src = window.URL.createObjectURL(mediaStreamObj);
+                }
+
+                video.onloadedmetadata = function(ev) {
+                    //show in the video element what is being captured by the webcam
+                    video.play();
+                };
+            })
+            .catch(function(err) { 
+                console.log(err.name, err.message); 
+            });
+        }
+        
+        updateVideo();
         
         /*********************************
         getUserMedia returns a Promise
