@@ -11,11 +11,13 @@
         <h1>MediaCapture, MediaRecorder and Streams API</h1>
     </header>
     <main>
+        <button id="switchCam">
         <video></video>
     </main>    
     <script>
+        var switch = document.querySelector('button');
         
-        let constraintObj = { 
+        var constraintObj = { 
             audio: false, 
             video: { 
                 facingMode: "environment", 
