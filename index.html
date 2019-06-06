@@ -15,7 +15,7 @@
         <video></video>
     </main>    
     <script>
-        var constraintObj = {
+        let constraintObj = {
             audio: false,
             video: {
                 facingMode: "user",
@@ -27,7 +27,7 @@
         // facingMode: {exact: "user"}
         // facingMode: "environment" or "user"
         
-        var environment = false
+        /*var environment = false
         function switch();
             if (environment) {
                 environment = false
@@ -51,9 +51,9 @@
                 };
             }
             updateVideo();
-        }
+        }*/
         
-        function updateVideo() {
+        /*function updateVideo() {*/
             //handle older browsers that might implement getUserMedia in some way
             if (navigator.mediaDevices === undefined) {
                 navigator.mediaDevices = {};
@@ -97,10 +97,7 @@
             .catch(function(err) { 
                 console.log(err.name, err.message); 
             });
-        }
-        window.onload = updateVideo();
-        
-        updateVideo();
+        /*}*/
         
         /*********************************
         getUserMedia returns a Promise
