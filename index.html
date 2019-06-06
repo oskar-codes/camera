@@ -11,6 +11,9 @@
 <body>
 <div>
     <video autoplay></video>
+    <select name="" id="camera-select">
+        <option value="">Select camera</option>
+    </select>
 </div>
 
 <script src="https://unpkg.com/feather-icons"></script>
@@ -20,6 +23,19 @@
     const stream = await navigator.mediaDevices.getUserMedia({video: true})
     video.srcObject = stream;
   }
+   
+  const cameraOptions = document.querySelector('#camera-select');
+
+  const getCameraSelection = async () => {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    const options = videoDevices.map(videoDevice => {
+      return `<option value="${videoDevice.deviceId}">${videoDevice.label}</option>`;
+    });
+    cameraOptions.innerHTML = options.join('');
+  };
+    
+  getCameraSelection();
 </script>
 </body>
 </html>
