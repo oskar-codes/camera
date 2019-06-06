@@ -18,6 +18,8 @@
 
 <script src="https://unpkg.com/feather-icons"></script>
 <script>
+  const cameraOptions = document.querySelector('#camera-select');
+    
   const constraints = {
   video: {
     width: {
@@ -49,8 +51,6 @@ cameraOptions.onchange = () => {
     const stream = await navigator.mediaDevices.getUserMedia({video: true})
     video.srcObject = stream;
   }
-   
-  const cameraOptions = document.querySelector('#camera-select');
 
   const getCameraSelection = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
